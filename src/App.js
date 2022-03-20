@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import RobotSingle from "./components/RobotSingle";
+import SearchBar from "./components/SearchBar";
 
 function App() {
+  const [robots, setRobots] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const robotFetch = async () => {
+    const response = await fetch(
+      "https://api.hatchways.io/assessment/students"
+    );
+    const data = await response.json();
+    setRobots(data);
+  };
+
+  const searchText = (text) => {
+    setSearch(text);
+  };
+
+  const filteredRobots = robots?.students?.filter((robot) => {
+    return robot?.firstName.toLowerCase().includes(search.toLowerCase());
+  });
+  console.log("filterd", filteredRobots);
+
+  useEffect(() => {
+    robotFetch();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchBar searchText={searchText} />
+      {filteredRobots?.map((robot, index) => (
+        <RobotSingle key={robot.id} robot={robot} />
+      ))}
     </div>
   );
 }
