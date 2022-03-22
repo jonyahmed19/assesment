@@ -1,18 +1,23 @@
 import React from "react";
 
-const SearchBar = ({ searchText }) => {
+const SearchBar = ({ searchText, placeholder, tag, setSearchTag }) => {
   const searchRobots = (e) => {
-    searchText(e.target.value);
+    if (tag) {
+      setSearchTag(e.target.value);
+    } else {
+      searchText(e.target.value);
+    }
     e.preventDefault();
   };
 
   return (
     <div className="searchbar">
-      <form action="">
+      <form>
         <input
+          className="text"
           onChange={searchRobots}
           type="text"
-          placeholder="Search by name"
+          placeholder={placeholder}
         />
         <input className="submit" type="submit" />
       </form>
@@ -20,4 +25,4 @@ const SearchBar = ({ searchText }) => {
   );
 };
 
-export default SearchBar;
+export default React.memo(SearchBar);
